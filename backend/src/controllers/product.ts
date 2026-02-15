@@ -1,25 +1,29 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Product from '../models/product';
+import BadRequestError from '../errors/bad-request-error';
+import ConflictError from '../errors/conflict-error';
 
-export const getProducts = async (req: Request, res: Response) => {
-    return await Product.find({})
-    .then((products) => res.status(200).send({ items: products, total: products.length }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
-}
-
-export const createProduct = async (req: Request, res: Response) => {
-    if (!req.body) {
-        res.status(400).send({message: "Контент не предоставлен"});
-        return
+export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const products = await Product.find({});
+        res.status(200).send({ items: products, total: products.length });
+    } catch (error) {
+        next(error);
     }
-    const { title, image, category, description, price } = req.body;
-    return await Product.create({ title, image, category, description, price })
-        .then((product) => res.status(200).send({ data: product }))
-        .catch((err) => {
-            if (err.code === 11000) {
-                return res.status(409).send({ message: 'Такой товар уже существует' });
-            }
-            res.status(500).send({ message: err.message });
-        });
+};
 
+export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.body) {
+            return next(new BadRequestError('Контент не предоставлен'));
+        }
+        const { title, image, category, description, price } = req.body;
+        const product = await Product.create({ title, image, category, description, price });
+        res.status(201).send({ data: product });
+    } catch (error) {
+        if (error instanceof Error && error.message.includes('E11000')) {
+            return next(new ConflictError('Такой товар уже существует'));
+        }
+        next(error);
+    }
 }
