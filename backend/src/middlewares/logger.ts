@@ -8,7 +8,7 @@ export const requestLogger = expressWinston.logger({
       filename: path.join(process.cwd(), 'logs', 'request.log'),
     }),
   ],
-  format: winston.format.json()
+  format: winston.format.json(),
 });
 
 export const errorLogger = expressWinston.errorLogger({
@@ -17,5 +17,5 @@ export const errorLogger = expressWinston.errorLogger({
       filename: path.join(process.cwd(), 'logs', 'error.log'),
     }),
   ],
-  format: winston.format.json()
+  format: winston.format.json(),
 });

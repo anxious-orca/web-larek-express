@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-export interface IImage { 
+export interface IImage {
     fileName: string;
     originalName: string;
 }
@@ -21,7 +21,7 @@ const imageSchema = new Schema<IImage>({
   originalName: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const productSchema = new Schema<IProduct>({
@@ -29,8 +29,8 @@ const productSchema = new Schema<IProduct>({
     type: String,
     required: true,
     unique: true,
-    minlength: 2, 
-    maxlength: 30, 
+    minlength: 2,
+    maxlength: 30,
   },
   image: imageSchema,
   category: {
@@ -44,7 +44,7 @@ const productSchema = new Schema<IProduct>({
   price: {
     type: Number,
     required: false,
-    default: null
+    default: null,
   },
 });
 

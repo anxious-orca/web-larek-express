@@ -16,20 +16,20 @@ export interface IOrder {
 }
 
 const orderSchema = Joi.object<IOrder>({
-    payment: Joi.string().valid(...Object.values(PaymentMethod)).required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().trim().required(),
-    address: Joi.string().trim().required(),
-    total: Joi.number().positive().required(),
-    items: Joi.array()
-        .items(Joi.string().required())
-        .min(1)
-        .required()
+  payment: Joi.string().valid(...Object.values(PaymentMethod)).required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string().trim().required(),
+  address: Joi.string().trim().required(),
+  total: Joi.number().positive().required(),
+  items: Joi.array()
+    .items(Joi.string().required())
+    .min(1)
+    .required(),
 });
 
 export const imageSchema = Joi.object<IImage>({
   fileName: Joi.string().required(),
-  originalName: Joi.string().required()
+  originalName: Joi.string().required(),
 });
 
 export const productSchema = Joi.object<IProduct>({
@@ -37,8 +37,8 @@ export const productSchema = Joi.object<IProduct>({
   image: imageSchema.required(),
   category: Joi.string().required(),
   description: Joi.string().optional(),
-  price: Joi.number().allow(null).optional()
+  price: Joi.number().allow(null).optional(),
 });
 
-export const productValidator = celebrate({[Segments.BODY]: productSchema})
-export const orderValidator = celebrate({[Segments.BODY]: orderSchema});
+export const productValidator = celebrate({ [Segments.BODY]: productSchema });
+export const orderValidator = celebrate({ [Segments.BODY]: orderSchema });
