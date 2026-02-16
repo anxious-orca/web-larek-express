@@ -24,8 +24,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(errorLogger);
 app.use(errors());
-app.use('*', (req, res, next) => {
-  next(new NotFoundError('Route not found'));
+app.use('*', (_req, _res, next) => {
+  return next(new NotFoundError('Route not found'));
 });
 app.use(errorHandler);
 
