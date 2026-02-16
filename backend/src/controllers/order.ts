@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
-import { Order } from '../middlewares/validations';
+import { IOrder } from '../middlewares/validators';
 import Product from '../models/product';
 import BadRequestError from '../errors/bad-request-error';
 
@@ -10,7 +10,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
             return next(new BadRequestError('Контент не предоставлен'));
         }
 
-        const order: Order = req.body;
+        const order: IOrder = req.body;
         const products = await Product.find({
             _id: { $in: order.items },
             price: { $exists: true, $ne: null }

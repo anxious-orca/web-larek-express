@@ -1,11 +1,12 @@
 import { celebrate, Joi, Segments } from 'celebrate';
+import { IImage, IProduct } from '../models/product';
 
 enum PaymentMethod {
   Card = 'card',
   Online = 'online'
 }
 
-export interface Order {
+export interface IOrder {
     payment: PaymentMethod;
     email: string;
     phone: string;
@@ -14,7 +15,7 @@ export interface Order {
     items: string[];
 }
 
-const orderSchema = Joi.object<Order>({
+const orderSchema = Joi.object<IOrder>({
     payment: Joi.string().valid(...Object.values(PaymentMethod)).required(),
     email: Joi.string().email().required(),
     phone: Joi.string().trim().required(),
@@ -26,4 +27,18 @@ const orderSchema = Joi.object<Order>({
         .required()
 });
 
+export const imageSchema = Joi.object<IImage>({
+  fileName: Joi.string().required(),
+  originalName: Joi.string().required()
+});
+
+export const productSchema = Joi.object<IProduct>({
+  title: Joi.string().min(2).max(30).required(),
+  image: imageSchema.required(),
+  category: Joi.string().required(),
+  description: Joi.string().optional(),
+  price: Joi.number().allow(null).optional()
+});
+
+export const productValidator = celebrate({[Segments.BODY]: productSchema})
 export const orderValidator = celebrate({[Segments.BODY]: orderSchema});
