@@ -22,7 +22,7 @@ const imageSchema = new Schema<IImage>({
     type: String,
     required: true,
   },
-});
+}, { versionKey: false });
 
 const productSchema = new Schema<IProduct>({
   title: {
@@ -46,6 +46,6 @@ const productSchema = new Schema<IProduct>({
     required: false,
     default: null,
   },
-});
+}, { versionKey: false });
 
 export default model<IProduct>('product', productSchema);

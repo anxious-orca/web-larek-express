@@ -6,12 +6,15 @@ import { config } from './config';
 import router from './routes/index';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import errorHandler from './middlewares/error-handler';
+import limiter from './middlewares/rate-limiter';
 import NotFoundError from './errors/not-found-error';
 
 const cors = require('cors');
 const app = express();
 
 app.use(requestLogger);
+
+app.use(limiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,11 +25,12 @@ app.use(cors());
 app.use('/', router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(errorLogger);
-app.use(errors());
 app.use('*', (_req, _res, next) => {
   return next(new NotFoundError('Route not found'));
 });
+
+app.use(errorLogger);
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(config.port, () => {
