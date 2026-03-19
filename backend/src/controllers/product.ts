@@ -1,0 +1,33 @@
+import { NextFunction, Request, Response } from 'express';
+import Product from '../models/product';
+import BadRequestError from '../errors/bad-request-error';
+import ConflictError from '../errors/conflict-error';
+
+export const getProducts = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const products = await Product.find({});
+    res.status(200).send({ items: products, total: products.length });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.body) {
+      return next(new BadRequestError('Контент не предоставлен'));
+    }
+    const {
+      title, image, category, description, price,
+    } = req.body;
+    const product = await Product.create({
+      title, image, category, description, price,
+    });
+    return res.status(201).send({ data: product });
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('E11000')) {
+      return next(new ConflictError('Такой товар уже существует'));
+    }
+    return next(error);
+  }
+};
